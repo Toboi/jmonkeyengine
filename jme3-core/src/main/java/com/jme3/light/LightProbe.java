@@ -31,6 +31,8 @@
  */
 package com.jme3.light;
 
+import com.jme3.asset.AssetKey;
+import com.jme3.asset.CloneableSmartAsset;
 import com.jme3.bounding.*;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.environment.LightProbeFactory;
@@ -67,7 +69,8 @@ import java.util.logging.Logger;
  * @see EnvironmentCamera
  * @author nehon
  */
-public class LightProbe extends Light implements Savable {
+public class LightProbe extends Light implements Savable, CloneableSmartAsset
+{
 
     private static final Logger logger = Logger.getLogger(LightProbe.class.getName());
     public static final Matrix4f FALLBACK_MATRIX = new Matrix4f(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1);
@@ -82,6 +85,50 @@ public class LightProbe extends Light implements Savable {
     public enum AreaType{
         Spherical,
         OrientedBox
+    }
+
+    public LightProbe clone() {
+        LightProbe newP = new LightProbe();
+        if(area instanceof SphereProbeArea)
+        {
+
+            try
+            {
+                newP.area = ((SphereProbeArea) area).clone();
+            } catch (CloneNotSupportedException e)
+            {
+                newP.area = new SphereProbeArea();
+                e.printStackTrace();
+            }
+        }else if(area instanceof OrientedBoxProbeArea)
+        {
+            try
+            {
+                newP.area = ((OrientedBoxProbeArea) area).clone();
+            } catch (CloneNotSupportedException e)
+            {
+                newP.area = new OrientedBoxProbeArea();
+                e.printStackTrace();
+            }
+        }
+        newP.shCoeffs = shCoeffs;
+        newP.prefilteredEnvMap = prefilteredEnvMap;
+        newP.ready = ready;
+        newP.position = position;
+        newP.nbMipMaps = nbMipMaps;
+        return newP;
+    }
+
+    private AssetKey assetKey;
+
+    @Override public void setKey(AssetKey key)
+    {
+        this.assetKey = assetKey;
+    }
+
+    @Override public AssetKey getKey()
+    {
+        return assetKey;
     }
 
     /**
