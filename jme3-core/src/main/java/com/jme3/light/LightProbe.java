@@ -111,10 +111,10 @@ public class LightProbe extends Light implements Savable, CloneableSmartAsset
                 e.printStackTrace();
             }
         }
-        newP.shCoeffs = shCoeffs;
+        newP.shCoeffs = shCoeffs.clone();
         newP.prefilteredEnvMap = prefilteredEnvMap;
         newP.ready = ready;
-        newP.position = position;
+        newP.position = position.clone();
         newP.nbMipMaps = nbMipMaps;
         return newP;
     }
